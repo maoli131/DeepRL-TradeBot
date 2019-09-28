@@ -2,7 +2,7 @@
 
 ## General
 
-Research project on applying deep reinforcement learning to perform financial market predictions. Independent research conducted by Mao L. and Songling L., guided by professor Sicun Gao, UC San Diego Jacobs School of Engineering. 
+Research project on applying deep reinforcement learning to perform financial market predictions. Independent research conducted by Mao L. and Songlin L., guided by professor Sicun Gao, UC San Diego Jacobs School of Engineering. 
 
 ## Dataset
 
@@ -21,9 +21,13 @@ source venv/bin/activate
 ```
 Then install all neccessary packages using:
 ```
-pip install -r requirement
+pip install -r requirements.txt
 ```
-Put your own Alpha Vantage API key in the `.env` file under `/config`. 
+Put your own Alpha Vantage API key in the `.env` file under `/config`. To fetch data from the AlphaVantage and output to a csv file under folder data, run the following:
+```
+python3 fetchdata.py
+Please enter the ticker of your stock of choice: [StockName]
+```
 
 ## Reference
 
