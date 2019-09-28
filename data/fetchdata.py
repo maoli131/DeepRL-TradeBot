@@ -59,15 +59,23 @@ output = pd.DataFrame(
 )
 print(output.head(), '\n')
 
+#making a folder to store data
+try:
+    os.mkdir("invest_data/")
+except OSError:
+    print("Creation of the directory invest_data failed")
+else:
+    print("Successfully created the directory invest_data ")
+
 #deletes a file if it is named in the same way (the data would essentially be the same)
 while True:
-    if os.path.isfile("data/" +ticker + "_" + a + b  + c + ".csv"):
-        os.remove("data/" + ticker + "_" + a + b  + c + ".csv")
+    if os.path.isfile("invest_data/" +ticker + "_" + a + b  + c + ".csv"):
+        os.remove("invest_data/" + ticker + "_" + a + b  + c + ".csv")
     else:
         break
 
 #data is pushed into a CSV file
-output.to_csv("data/" + ticker + "_" + a + b  + c + ".csv")
+output.to_csv("invest_data/" + ticker + "_" + a + b  + c + ".csv")
 
 print("File saved as " + ticker + "_" + a + b  + c + ".csv in the 'data' folder \n")
 print("--------------------------------------------------- \n")
