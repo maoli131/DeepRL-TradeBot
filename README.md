@@ -12,6 +12,19 @@ Real-time and historical data on stocks, provided by Alpha Vintage.
 
 Deep reinforcement learning
 
+## Installation
+
+First start a python (Python3.7 & Pip3) virtual environment as following:
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+Then install all neccessary packages using:
+```
+pip install -r requirement
+```
+Put your own Alpha Vantage API key in the `.env` file under `/config`. 
+
 ## Reference
 
 - [Market Making via Reinforcement Learning](https://arxiv.org/abs/1804.04216)
