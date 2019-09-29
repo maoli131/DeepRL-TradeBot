@@ -1,8 +1,6 @@
 import random
-import json
 import gym
 from gym import spaces
-import pandas as pd
 import numpy as np
 
 from render.StockTradingGraph import StockTradingGraph
@@ -37,7 +35,7 @@ class TradingEnv(gym.Env):
 
         # Actions of the format Buy x%, Sell x%, Hold, etc.
         self.action_space = spaces.Box(
-            low=np.array([0, 0]), high=np.array([3, 5]), dtype=np.int)
+            low=np.array([0, 0]), high=np.array([3, 1]), dtype=np.int)
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
