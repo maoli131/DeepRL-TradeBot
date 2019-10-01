@@ -51,7 +51,7 @@ print('Number of training days: {}. Number of test days: {}.'.format(num_trainin
 # 3. Technical Indicators: to be hand picked
 ## Directly get from Alpha Vintage API
 
-# 4. Fourier Transform: extract trends and denoise it
+# 4. Fourier Transform: extract short and long term trends and denoise it
 data_FT = dataset_ex_df[['Date', 'Close']]
 
 close_fft = np.fft.fft(np.asarray(data_FT['Close'].tolist()))
@@ -71,4 +71,57 @@ plt.title('Figure 3: ' + stock_name + ' (close) stock prices & Fourier transform
 plt.legend()
 plt.show()
 
+# 4.1: components for fourier transform
+from collections import deque
+items = deque(np.asarray(fft_df['absolute'].tolist()))
+items.rotate(int(np.floor(len(fft_df)/2)))
+plt.figure(figsize=(10, 7), dpi=80)
+plt.stem(items)
+plt.title('Figure 4: Components of Fourier transforms')
+plt.show()
 
+# 5. ARIMA: Auto Regressive Integrated Moving Average
+# Simple time series forecast
+from statsmodels.tsa.arima_model import ARIMA
+from pandas import DataFrame
+from pandas import datetime
+
+series = data_FT['Close']
+model = ARIMA(series, order=(5, 1, 0))
+model_fit = model.fit(disp=0)
+print(model_fit.summary())
+
+from statsmodels.graphics.tsaplots import plot_acf
+plot_acf(series)
+plt.figure(figsize=(10, 7), dpi=80)
+plt.show() 
+
+# 5.1 Predict with ARIMA and show the MSE
+from sklearn.metrics import mean_squared_error
+
+X = series.values
+size = int(len(X) * 0.66)
+train, test = X[0:size], X[size:len(X)]
+history = [x for x in train]
+predictions = list()
+for t in range(len(test)):
+    model = ARIMA(history, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    output = model_fit.forecast()
+    yhat = output[0]
+    predictions.append(yhat)
+    obs = test[t]
+    history.append(obs)
+
+error = mean_squared_error(test, predictions)
+print('Test MSE: %.3f' % error)
+
+# 5.2 Plot the predicted from ARIMA and real prices.
+plt.figure(figsize=(12, 6), dpi=100)
+plt.plot(test, label='Real')
+plt.plot(predictions, color='red', label='Predicted')
+plt.xlabel('Days')
+plt.ylabel('USD')
+plt.title('Figure 5: ARIMA model on ' + stock_name + ' stock')
+plt.legend()
+plt.show() 
