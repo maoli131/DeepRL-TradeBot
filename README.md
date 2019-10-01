@@ -33,3 +33,4 @@ Please enter the ticker of your stock of choice: [StockName]
 
 - [Market Making via Reinforcement Learning](https://arxiv.org/abs/1804.04216)
 - [Constrained Policy Optimization](https://arxiv.org/abs/1705.10528)
+- [Stock Prediction AI Github Repo](https://github.com/borisbanushev/stockpredictionai)

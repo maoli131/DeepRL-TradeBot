@@ -1,3 +1,4 @@
 venv/
 config/.env
 data/invest_data
+.vscode
