@@ -15,7 +15,8 @@ MAX_STEPS = 20000
 
 INITIAL_ACCOUNT_BALANCE = 10000
 
-LOOKBACK_WINDOW_SIZE = 40
+LOOKBACK_WINDOW_SIZE = 10
+LOOKFORWARD_WINDOW_SIZE = 10
 
 
 def factor_pairs(val):
@@ -39,7 +40,7 @@ class TradingEnv(gym.Env):
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(5, LOOKBACK_WINDOW_SIZE + 2), dtype=np.float16)
+            low=0, high=1, shape=(5, LOOKBACK_WINDOW_SIZE + LOOKFORWARD_WINDOW_SIZE + 2), dtype=np.float16)
 
     def _adjust_prices(self, df):
         adjust_ratio = df['Adjusted_Close'] / df['Close']
@@ -57,23 +58,27 @@ class TradingEnv(gym.Env):
         start = self.current_step - LOOKBACK_WINDOW_SIZE
         start = 0 if start < 0 else start
 
+        end = self.current_step + 1 + LOOKFORWARD_WINDOW_SIZE
+        end = self.df.shape[0] if end > self.df.shape[0] else end
+
         # Get the stock data points for the last 5 days and scale to between 0-1
         state = np.array([
-            self.df.loc[range(start, self.current_step + 1), 'Open']
+            self.df.loc[range(start, end), 'Open']
                 .values / MAX_SHARE_PRICE,
-            self.df.loc[range(start, self.current_step + 1), 'High']
+            self.df.loc[range(start, end), 'High']
                 .values / MAX_SHARE_PRICE,
-            self.df.loc[range(start, self.current_step + 1), 'Low']
+            self.df.loc[range(start, end), 'Low']
                 .values / MAX_SHARE_PRICE,
-            self.df.loc[range(start, self.current_step + 1), 'Close']
+            self.df.loc[range(start, end), 'Close']
                 .values / MAX_SHARE_PRICE,
-            self.df.loc[range(start, self.current_step + 1), 'Volume']
+            self.df.loc[range(start, end), 'Volume']
                 .values / MAX_NUM_SHARES,
         ])
 
-        if start == 0:
-            state = np.pad(state, [(0, 0), (0, LOOKBACK_WINDOW_SIZE - self.current_step)],
-                           "constant", constant_values=0)
+        front_padding = LOOKBACK_WINDOW_SIZE - self.current_step if start == 0 else 0
+        end_padding = LOOKFORWARD_WINDOW_SIZE + self.current_step - self.df.shape[0] + 1 if end >= self.df.shape[0] else 0
+
+        state = np.pad(state, [(0, 0), (front_padding, end_padding)], "constant", constant_values=0)
 
         # Append additional data and scale each value to between 0-1
         # The x axis is  the date. The y axis is the stock features
@@ -163,7 +168,7 @@ class TradingEnv(gym.Env):
 
         return self._next_observation()
 
-    def _render_to_file(self, filename='render.txt'):
+    def _render_to_file(self, filename='render_LB_10_FB_5.txt'):
         profit = self.net_worth - INITIAL_ACCOUNT_BALANCE
 
         file = open(filename, 'a+')
@@ -183,7 +188,7 @@ class TradingEnv(gym.Env):
     def render(self, mode='live', **kwargs):
         # Render the environment to the screen
         if mode == 'file':
-            self._render_to_file(kwargs.get('filename', 'render.txt'))
+            self._render_to_file(kwargs.get('filename', 'render_LB_10_FB_5.txt'))
 
         elif mode == 'live':
             if self.visualization == None:
