@@ -107,9 +107,9 @@ class TradingEnv(gym.Env):
             additional_cost = shares_bought * current_price
 
             self.balance -= additional_cost
-            self.cost_basis = (
-
-                                      prev_cost + additional_cost) / (self.shares_held + shares_bought)
+            if self.shares_held + shares_bought != 0:
+                # At the beginning, it's possible for the sum to be zero
+                self.cost_basis = (prev_cost + additional_cost) / (self.shares_held + shares_bought)
             self.shares_held += shares_bought
 
             if shares_bought > 0:

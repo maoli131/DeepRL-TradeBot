@@ -24,8 +24,9 @@ model = PPO2(MlpPolicy, env, verbose=1)
 model.learn(total_timesteps=20000)
 
 obs = env.reset()
-for i in range(2000):
+done = False
+while not done:
     action, _states = model.predict(obs)
 
     obs, rewards, done, info = env.step(action)
-    env.render(title=name[:-13], mode='file')
+    env.render(title=name[:-13]) # use mode = 'file' to output files instead of videos
