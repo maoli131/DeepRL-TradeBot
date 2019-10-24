@@ -36,7 +36,7 @@ class TradingEnv(gym.Env):
 
         # Actions of the format Buy x%, Sell x%, Hold, etc.
         self.action_space = spaces.Box(
-            low=np.array([0, 0]), high=np.array([3, 1]), dtype=np.int)
+            low=np.array([0, 0]), high=np.array([3, 1]), dtype=np.float16)
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
@@ -99,7 +99,7 @@ class TradingEnv(gym.Env):
         action_type = action[0]
         amount = action[1]
 
-        if action_type < 1:
+        if action_type < 1.5:
             # Buy amount % of balance in shares
             total_possible = int(self.balance / current_price)
             shares_bought = int(total_possible * amount)
@@ -117,7 +117,7 @@ class TradingEnv(gym.Env):
                                     'shares': shares_bought, 'total': additional_cost,
                                     'type': "buy"})
 
-        elif action_type < 2:
+        elif action_type <= 3:
             # Sell amount % of shares held
             shares_sold = int(self.shares_held * amount)
             self.balance += shares_sold * current_price

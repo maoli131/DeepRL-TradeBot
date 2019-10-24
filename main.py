@@ -12,7 +12,7 @@ from env.TradingEnv import LOOKBACK_WINDOW_SIZE
 
 import pandas as pd
 
-TOTAL_TIME_STEPS = 200000
+TOTAL_TIME_STEPS = 3500
 
 
 #read the historical stock data
@@ -35,13 +35,25 @@ model = PPO2(MlpPolicy, train_env, verbose=1)
 model.learn(total_timesteps=TOTAL_TIME_STEPS)
 model.save(save_path="./saved_model/ppo_{}_{}.pkl".format(asset_name, TOTAL_TIME_STEPS), cloudpickle=True)
 
-model.set_env(test_env)
-obs = test_env.reset()
+obs = train_env.reset()
 
+# back testing on training data
 done = False
 while not done:
     action, _states = model.predict(obs)
+    obs, rewards, done, info = train_env.step(action)
+    train_env.render(title=name[:-13], mode='file', filename='LB_{}_LF_{}_{}_{}_train.txt'
+                    .format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
+    # use mode = 'file' to output files instead of videos
+
+done = False
+model.set_env(test_env)
+obs = test_env.reset()
+
+# back testing on testing data
+while not done:
+    action, _states = model.predict(obs)
     obs, rewards, done, info = test_env.step(action)
-    test_env.render(title=name[:-13], mode='file', filename='LB_{}_LF_{}_{}_{}.txt'
+    test_env.render(title=name[:-13], mode='file', filename='LB_{}_LF_{}_{}_{}_test.txt'
                     .format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
     # use mode = 'file' to output files instead of videos
