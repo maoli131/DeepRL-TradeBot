@@ -45,10 +45,10 @@ class TradingEnv(gym.Env):
     def _adjust_prices(self, df):
         adjust_ratio = df['Adjusted_Close'] / df['Close']
 
-        df['Open'] = df['Open'] * adjust_ratio
-        df['High'] = df['High'] * adjust_ratio
-        df['Low'] = df['Low'] * adjust_ratio
-        df['Close'] = df['Close'] * adjust_ratio
+        df['Open'] = df.loc[:, 'Open'] * adjust_ratio
+        df['High'] = df.loc[:, 'High'] * adjust_ratio
+        df['Low'] = df.loc[:, 'Low'] * adjust_ratio
+        df['Close'] = df.loc[:, 'Close'] * adjust_ratio
 
         return df
 
@@ -188,7 +188,7 @@ class TradingEnv(gym.Env):
     def render(self, mode='live', **kwargs):
         # Render the environment to the screen
         if mode == 'file':
-            self._render_to_file(kwargs.get('filename', 'render_LB_10_FB_5.txt'))
+            self._render_to_file(kwargs.get('filename', 'render.txt'))
 
         elif mode == 'live':
             if self.visualization == None:

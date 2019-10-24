@@ -20,7 +20,8 @@ while True:
         print("Invalid entry: a stock ticker only uses characters - integers or symbols are not permitted")
     else:
         #print(apiurl_daily_adjusted)
-        pull = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + ticker + "&outputsize=compact&apikey=" + apikey)
+        pull = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol="
+                            + ticker + "&outputsize=full&apikey=" + apikey)
         
         if "Error" in pull.text:
             print("Error: stock either cannot be found or is not listed on Alpha Vantage - please enter another stock ticker")
