@@ -7,6 +7,7 @@ from stable_baselines.common.vec_env import DummyVecEnv
 from stable_baselines import PPO2
 
 from env.TradingEnv import TradingEnv
+
 from env.TradingEnv import LOOKFORWARD_WINDOW_SIZE
 from env.TradingEnv import LOOKBACK_WINDOW_SIZE
 
@@ -56,3 +57,4 @@ while not done:
     obs, rewards, done, info = test_env.step(action)
     test_env.render(title=name[:-13], mode=DISPLAY_MODE, filename='LB_{}_LF_{}_{}_{}_test.txt'.
                     format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
+

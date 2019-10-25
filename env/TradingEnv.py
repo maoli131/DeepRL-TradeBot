@@ -100,6 +100,7 @@ class TradingEnv(gym.Env):
         amount = action[1]
 
         if action_type < 1.5:
+
             # Buy amount % of balance in shares
             total_possible = int(self.balance / current_price)
             shares_bought = int(total_possible * amount)
@@ -118,6 +119,7 @@ class TradingEnv(gym.Env):
                                     'type': "buy"})
 
         elif action_type <= 3:
+
             # Sell amount % of shares held
             shares_sold = int(self.shares_held * amount)
             self.balance += shares_sold * current_price
@@ -188,6 +190,7 @@ class TradingEnv(gym.Env):
     def render(self, mode='live', **kwargs):
         # Render the environment to the screen
         if mode == 'file':
+
             self._render_to_file(kwargs.get('filename', 'render.txt'))
 
         elif mode == 'live':
