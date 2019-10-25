@@ -12,7 +12,8 @@ from env.TradingEnv import LOOKBACK_WINDOW_SIZE
 
 import pandas as pd
 
-TOTAL_TIME_STEPS = 3500
+TOTAL_TIME_STEPS = 20000
+DISPLAY_MODE = 'file'  # use mode = 'file' to output files instead of videos
 
 
 #read the historical stock data
@@ -42,9 +43,8 @@ done = False
 while not done:
     action, _states = model.predict(obs)
     obs, rewards, done, info = train_env.step(action)
-    train_env.render(title=name[:-13], mode='file', filename='LB_{}_LF_{}_{}_{}_train.txt'
-                    .format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
-    # use mode = 'file' to output files instead of videos
+    train_env.render(title=name[:-13], mode=DISPLAY_MODE, filename='LB_{}_LF_{}_{}_{}_train.txt'.
+                     format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
 
 done = False
 model.set_env(test_env)
@@ -54,6 +54,5 @@ obs = test_env.reset()
 while not done:
     action, _states = model.predict(obs)
     obs, rewards, done, info = test_env.step(action)
-    test_env.render(title=name[:-13], mode='file', filename='LB_{}_LF_{}_{}_{}_test.txt'
-                    .format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
-    # use mode = 'file' to output files instead of videos
+    test_env.render(title=name[:-13], mode=DISPLAY_MODE, filename='LB_{}_LF_{}_{}_{}_test.txt'.
+                    format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name))
