@@ -29,6 +29,15 @@ train_size = int(len(df) * 0.9)
 train_df, test_df = df[0:train_size], df[train_size:len(df)]
 test_df = test_df.reset_index(drop=True)
 
+print(train_df.head())
+
+# ARIMA Predictor
+from predictors.arima import ArimaPredictor
+arima_predictor = ArimaPredictor()
+arima_predictor.train(train_df=train_df, column='Close')
+fc = arima_predictor.predict(steps=15)
+print(fc)
+
 # The algorithms require a vectorized environment to run
 train_env = DummyVecEnv([lambda: TradingEnv(train_df)])
 test_env = DummyVecEnv([lambda: TradingEnv(test_df)])
