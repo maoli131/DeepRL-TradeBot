@@ -76,9 +76,22 @@ model_high.set_env(test_env)
 obs = test_env.reset()
 
 # back testing on testing data
+rewards_going_down = 5
+old_rewards = float('-inf')
+model = model_low # initialize the model with model_low
 while not done:
-    action, _states = model_low.predict(obs)
+    action, _states = model.predict(obs)
     obs, rewards, done, info = test_env.step(action)
-    test_env.render(title=name[:-13], mode=DISPLAY_MODE, filename='LB_{}_LF_{}_{}_{}_{}test.txt'.
+
+    if rewards < old_rewards:
+        rewards_going_down -= 1
+        if rewards_going_down < 0:
+            if model is model_low:
+                model = model_high
+            else:
+                model = model_low
+
+    old_rewards = rewards
+    test_env.render(title=name[:-13], mode=DISPLAY_MODE, filename='LB_{}_LF_{}_{}_{}_{}_test.txt'.
                     format(LOOKBACK_WINDOW_SIZE, LOOKFORWARD_WINDOW_SIZE, TOTAL_TIME_STEPS, asset_name, NOTE))
 
